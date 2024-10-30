@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
+
 import time
 import config as conf
 
@@ -119,7 +120,7 @@ def extract_listings_data(driver,listings_list):
         
 
     """
-    
+    data_all.append(current_listings)
 
     for listing in listings_list:
 
@@ -128,8 +129,97 @@ def extract_listings_data(driver,listings_list):
 
         # opening the listings link
         load_link(driver,listing)
-        # click on the more details part to show all the info
-        time.sleep(2)
+        
+        # Selecting the wanted attributes and put them in a list of lists
+
+        # title of the listing
+        try : 
+
+            c_title = driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[1]/h1').text
+    
+        except NoSuchElementException : 
+
+            c_title = None
+
+        # Price of the object
+        try : 
+
+            c_price = driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/p').text
+
+        except NoSuchElementException : 
+
+            c_price = None
+
+        # City where the item is located
+        try : 
+            c_city = driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/span[1]').text
+        except NoSuchElementException: 
+            c_city = None
+        
+        # Timestamps of the listing
+        try : 
+        
+            time_element =  driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/span[2]/time')
+            c_datetime = time_element.get_attribute('datetime')
+           
+        except NoSuchElementException : 
+
+            C_datetime = None
+        # the description of the object
+        # try : 
+        
+        #     c_description =  driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[1]/div[2]/span[2]/time')
+            
+        # except NoSuchElementException : 
+
+        #     c_description = None
+
+        try : 
+            
+            # selecting the div that contains the info
+            div_container =  driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[4]/div[1]')
+
+            # itterate over the spans inside the div
+
+            spans = div_container.find_elements(By.TAG_NAME, 'span')
+
+            nb_rooms = spans[0].text if spans[0] else None
+            nb_baths = spans[1].text if spans[1] else None
+            surface_area = spans[2].text if spans[3] else None
+
+                
+
+        except Exception as e : 
+
+            print('something is missing ',e)
+
+        try : 
+
+            # Selecting the container div 
+
+            cont_div = driver.find_element(By.XPATH,'//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[4]/div[2]')
+
+            spans = cont_div.find_elements(By.TAG_NAME,'span')
+            extra_dict = {}
+
+            for i in range(len(spans)) : 
+                
+                extra_dict[spans[i].text] = spans[i+1].text
+
+        
+        except NoSuchElementException : 
+
+            print("something's missing in extra info")
+
+        # adding the data into a list in a specific order
+        
+
+
+
+
+        
+
+        
         
         
 
