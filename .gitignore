@@ -1,0 +1,15 @@
+# text files 
+test.py
+testingLog.txt
+dump.py
+
+# virtual python environement
+venv/
+.env/
+.venv/
+
+# the data file
+data/
+
+# Pycache folder
+source/__pycache__/
