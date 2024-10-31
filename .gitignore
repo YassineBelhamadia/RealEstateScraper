@@ -5,6 +5,7 @@ dump.py
 
 # virtual python environement
 venv/
+env/
 .env/
 .venv/
 
