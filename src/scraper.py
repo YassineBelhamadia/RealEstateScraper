@@ -199,7 +199,13 @@ def extract_listings_data(driver, listings_list):
         except NoSuchElementException:
             current_listings['equipement'] = None
 
+        try : 
 
+            current_listings['link'] = listing
+
+        except Exception as e :
+
+            print(e)
 
         # Add the current listing's data to the main list
         data_all.append(current_listings)
