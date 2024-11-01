@@ -185,24 +185,21 @@ def extract_listings_data(driver, listings_list):
         # Extract extra information into a dictionary
         try:
             cont_div = driver.find_element(
-                By.XPATH, '//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[6]/div'
+                By.XPATH, '//*[@id="__next"]/div/main/div/div[3]/div[1]/div[2]/div[1]/div[1]/div[2]/div[6]/div/div'
             )
             spans = cont_div.find_elements(By.TAG_NAME, 'span')
             
             # the logic is now to store data as a strings that groups the list of additional equipemment available
-            for i in range(0, len(spans), 2):
+            for i in range(0, len(spans)):
+  
+                current_listings.setdefault("equipement",[]).append(spans[i].text)
 
-                if i + 1 < len(spans):
-                    
-                    current_listings.setdefault("equipement",[]).append(spans[i].text)
-
-            current_listings['equipement'] = ", ".join(current_listings['equipement'])
+            current_listings['equipement'] = ", ".join(current_listings['equipement']) if current_listings['equipement'] else None
         
         except NoSuchElementException:
             current_listings['equipement'] = None
 
 
-        
 
         # Add the current listing's data to the main list
         data_all.append(current_listings)

@@ -1,43 +1,51 @@
-import chromedriver_autoinstaller  # Installs the chromedriver according the chrome version you have.
+import chromedriver_autoinstaller
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import config as conf
 import scraper as sp
 import data_processing as csv
+import logging
+import time
 
-# Install the desired verison of chromedriver.
+# Install ChromeDriver
 chromedriver_autoinstaller.install()
-print("Chromedriver installed.")
-
-
-
-
-
-
-
+logging.info("Chromedriver installed.")
 
 def main():
-    # initializing the chrome driver.
-    driver = webdriver.Chrome()
+    # Set up Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--headless")  # Optional headless mode
 
-    try : 
+    # Initialize Chrome driver
+    driver = webdriver.Chrome(options=chrome_options)
 
-
+    try:
+        # Extract links with retries
+        listings = []
+        MAX_RETRIES = 3
+        for attempt in range(MAX_RETRIES):
+            try:
+                listings = sp.extract_links_all(driver, 1, 10, conf.website_URL)
+                break
+            except Exception as e:
+                logging.error(f"Attempt {attempt + 1} failed with error: {e}")
+                time.sleep(2)
+        else:
+            logging.error("Max retries reached. Exiting.")
+            return
         
-        first_four = []
-
-        first_four = sp.extract_links_all(driver,3,4,conf.website_URL)
-
-        data = sp.extract_listings_data(driver,first_four[:2])
-
+        # Process data
+        data = sp.extract_listings_data(driver, listings)
         csv.data_to_csv(data)
-               
 
-
-    finally : 
-         
-         # Closing the browser.
-         driver.quit()
+    finally:
+        # Quit driver
+        driver.quit()
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='scraper.log', level=logging.INFO, 
+                        format='%(asctime)s:%(levelname)s:%(message)s')
     main()
-    
