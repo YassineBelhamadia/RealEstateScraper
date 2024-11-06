@@ -128,8 +128,9 @@ def extract_listings_data(driver, listings_list):
         data_all : A list containing data dictionaries for each listing.
     """
     data_all = []  # Holds all listings data
-    
+    counter = 1
     for listing in listings_list:
+        print(counter)
         current_listings = {}  # Dictionary for individual listing
 
         # Open the listing link
@@ -209,6 +210,8 @@ def extract_listings_data(driver, listings_list):
 
         # Add the current listing's data to the main list
         data_all.append(current_listings)
+
+        counter += 1
 
 
     return data_all

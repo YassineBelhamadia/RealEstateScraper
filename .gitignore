@@ -14,3 +14,9 @@ data/
 
 # Pycache folder
 src/__pycache__/
+
+
+# docker files 
+
+Dockerfile
+.dockerignore

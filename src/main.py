@@ -28,7 +28,7 @@ def main():
         MAX_RETRIES = 3
         for attempt in range(MAX_RETRIES):
             try:
-                listings = sp.extract_links_all(driver, 1, 5, conf.website_URL)
+                listings = sp.extract_links_all(driver, 1, 40, conf.website_URL)
                 break
             except Exception as e:
                 logging.error(f"Attempt {attempt + 1} failed with error: {e}")
